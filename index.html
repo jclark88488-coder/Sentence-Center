@@ -1,0 +1,141 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sentence Studio 95</title><style>
+*{box-sizing:border-box}body{margin:0;background:#008080;font:18px 'Trebuchet MS',Arial,sans-serif;color:#101010}.window{max-width:1150px;margin:12px auto;background:#c0c0c0;border:4px ridge #eee;box-shadow:3px 3px #333;padding:6px}.titlebar{background:linear-gradient(90deg,#000080,#2264c8);color:white;padding:7px 10px;font:bold 24px monospace;display:flex;justify-content:space-between}.windowbuttons{color:#000;background:#ddd;padding:0 9px;border:2px outset white}.menu{padding:7px;font-size:18px}.banner{background:repeating-conic-gradient(#5145b2 0% 25%,#8075d1 0% 50%) 0 0/30px 30px;border:3px inset #eee;text-align:center;padding:8px;color:#ffed58;font:bold italic clamp(25px,5vw,53px) Georgia,serif;text-shadow:3px 4px #101038,-1px -1px #fff}.sub{text-align:center;font:bold 27px Arial;border:3px inset #eee;background:#ddd;padding:7px}.main{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}.media,.challenge,.example{border:3px inset #fff;background:#eee;padding:10px}.media{display:flex;flex-direction:column;gap:8px;min-height:330px}.media img{width:100%;height:310px;object-fit:contain;background:#e6f0ed}.credit{font-size:12px;color:#454545}.challenge h2,.example h2{margin:0;background:#075b60;color:#fff;padding:12px;font-size:25px}.challenge p{font-size:23px;line-height:1.4;margin:15px 5px}.cards{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:10px 0}.piece{width:clamp(73px,8.2vw,120px);min-height:90px;display:flex;align-items:center;flex-direction:column;justify-content:space-around;text-align:center;border:2px solid #444;border-radius:5px;box-shadow:3px 3px #888;padding:5px}.blue{background:#a5d9f4}.yellow{background:#ffe48b}.white{background:#fff}.piece svg{width:75px;height:40px}.piece span{font-weight:bold;font-size:11px}.lower{display:grid;grid-template-columns:1fr 230px;gap:12px}.example{min-height:175px}.examplebody{padding:13px;font-size:21px}.actions{display:flex;flex-direction:column;gap:6px}button,select{font: bold 17px Arial;padding:11px;background:#ddd;border:3px outset #fff;cursor:pointer}button:active{border-style:inset}.purple{background:#bbb0fc}.status{border:3px inset white;margin-top:10px;padding:10px;background:#ddd}.hidden{display:none}.hint{background:#fff8c4;border:2px dashed #a87b00;padding:10px;margin-top:8px}.sentence{line-height:1.9}.sentence mark{background:#a5d9f4;padding:2px}.sentence em{background:#ffe48b;font-style:normal;padding:2px}.sentence b{background:#eee0a0;padding:2px}.settings{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:5px}.frame{border-bottom:3px solid #222;padding-bottom:6px;position:relative}.frame:before{content:'⌃';font-size:30px;position:relative;top:5px;margin-right:4px}.frame:after{content:'.';font-size:28px}.fallback{display:none;background:#fff3bd;padding:20px;text-align:center}a{color:#003a85}@media(max-width:760px){.main,.lower{grid-template-columns:1fr}.media img{height:240px}.lower{display:flex;flex-direction:column}.actions{display:grid;grid-template-columns:1fr 1fr}.piece{width:104px;min-height:100px}.banner{font-size:28px}}
+</style></head><body><div class="window"><div class="titlebar"><span>🌐 Sentence Studio</span><span class="windowbuttons">_ □ ×</span></div><div class="menu">File　 Practice　 Help</div><div class="banner">✎ Framing Your Thoughts ★</div><div class="sub">Sentence Piece Cards</div><div class="settings"><label>Difficulty <select id="difficulty"><option value="mixed">Mixed</option><option value="basic">Basic</option><option value="developing">Developing</option><option value="advanced">Advanced</option></select></label><label>Media <select id="category"><option value="all">All pictures</option><option value="real">Real animals</option><option value="cartoon">Cartoons</option></select></label></div><div class="main"><section class="media"><img id="picture" alt="Animated picture prompt"><div id="fallback" class="fallback">This animation could not load. Choose New Picture or check your internet connection.</div><div class="credit" id="credit"></div></section><section class="challenge"><h2>Your Challenge:</h2><p>Write a sentence about the animation using this sentence pattern:</p><div class="cards" id="pattern"></div></section></div><div class="lower"><section class="example"><h2>★ Example Sentence:</h2><div class="examplebody"><div id="placeholder">Try writing your own sentence first. Then click <b>Hint</b> or <b>Show Example</b>.</div><div id="hint" class="hint hidden"></div><div id="solution" class="hidden"><div id="sentence" class="sentence"></div><div class="frame" id="framed"></div><div class="cards" id="examplecards"></div></div></div></section><aside class="actions"><button id="newPicture">⚄ New Picture</button><button id="newPattern">⚄ New Pattern</button><button id="hintButton">💡 Hint</button><button class="purple" id="exampleButton">▤ Show Example</button></aside></div><div class="status">▣ Keep going! You've got this!　 <span id="count"></span></div></div>
+<script>
+'use strict';
+// Wikimedia Commons file URLs. Each entry links to its original source and license.
+const scenes=[
+{file:'Yawn.gif',name:'A dog yawning',kind:'real',subject:'The tired dog',verb:'yawns',past:'yawned',where:'on the floor',when:'after a long day',how:'sleepily',why:'because it is tired',second:'its owner watches',other:'The sleepy puppy',credit:'SecretDisc • CC BY-SA 3.0'},
+{file:'Dog galloping.gif',name:'A dog galloping',kind:'real',subject:'The energetic dog',verb:'runs',past:'ran',where:'across the ground',when:'during its exercise',how:'quickly',why:'because it wants to play',second:'the photographer watches',other:'The fast dog',credit:'Eadweard Muybridge / Waugsberg • public domain'},
+{file:'Dog galloping slow motion.gif',name:'A dog running in slow motion',kind:'real',subject:'The running dog',verb:'gallops',past:'galloped',where:'across the ground',when:'during the filming',how:'gracefully',why:'because it is exercising',second:'the camera records its movements',other:'The quick dog',credit:'Eadweard Muybridge / Waugsberg • public domain'},
+{file:'Walking cat.gif',name:'A walking cat animation',kind:'cartoon',subject:'The little cat',verb:'walks',past:'walked',where:'along the path',when:'during its walk',how:'slowly',why:'because it is exploring',second:'a bird flies nearby',other:'The curious cat',credit:'Sheilagraber • CC BY-SA 3.0'},
+{file:'Cartoon Cat Running.gif',name:'A cartoon cat running',kind:'cartoon',subject:'The cartoon cat',verb:'runs',past:'ran',where:'across the screen',when:'during the chase',how:'quickly',why:'because it is in a hurry',second:'another cat watches',other:'The little cartoon cat',credit:'Corwin • CC BY 2.5'},
+{file:'Walking Felix.gif',name:'Felix the Cat walking',kind:'cartoon',subject:'Felix the Cat',verb:'walks',past:'walked',where:'across the screen',when:'during his stroll',how:'cheerfully',why:'because he is exploring',second:'his friends wait nearby',other:'The cartoon cat',credit:'Tpa2067 • CC BY-SA 3.0'},
+{file:'Oreo Outside Rolling Around.gif',name:'A real dog rolling on grass',kind:'real',subject:'The playful dog',verb:'rolls',past:'rolled',where:'on the grass',when:'during playtime',how:'happily',why:'because it enjoys playing outside',second:'the grass bends beneath it',other:'The excited dog',credit:'Wikimedia Commons uploader • CC0'}
+];
+const patterns=[
+{"id": "simple", "level": "basic", "parts": ["subject", "action"], "hint": "Identify the subject and its action."},
+{"id": "where", "level": "basic", "parts": ["subject", "action", "where"], "hint": "Add where the action takes place."},
+{"id": "when", "level": "basic", "parts": ["subject", "action", "when"], "hint": "Add when the action happens."},
+{"id": "how", "level": "developing", "parts": ["subject", "action", "how"], "hint": "Describe how the action happens."},
+{"id": "why", "level": "developing", "parts": ["subject", "action", "why"], "hint": "Explain why the action happens."},
+{"id": "describer", "level": "developing", "parts": ["describer", "subject", "action", "where"], "hint": "Describe the subject, then add a location."},
+{"id": "twoexpanders", "level": "developing", "parts": ["subject", "action", "where", "when"], "hint": "Add both a where and when expander."},
+{"id": "compoundsubject", "level": "developing", "parts": ["subject", "connector", "subject", "action"], "hint": "Join two subjects with and."},
+{"id": "compoundpredicate", "level": "developing", "parts": ["subject", "action", "connector", "action"], "hint": "Use two different actions for one subject."},
+{"id": "series", "level": "advanced", "parts": ["subject", "action", "comma", "action", "comma", "connector", "action"], "hint": "List three different actions with commas and and."},
+{"id": "compound", "level": "advanced", "parts": ["subject", "action", "comma", "connector", "subject", "action"], "hint": "Join two complete thoughts with a comma and and."},
+{"id": "describerhowwhen", "level": "developing", "parts": ["describer", "subject", "action", "how", "when"], "hint": "Include a describer, how, and when."},
+{"id": "threeexpanders", "level": "advanced", "parts": ["subject", "action", "how", "where", "when"], "hint": "Include three distinct expanders."},
+{"id": "whywherewhen", "level": "advanced", "parts": ["subject", "action", "where", "when", "why"], "hint": "Tell where, when, and why."},
+{"id": "compoundwhere", "level": "advanced", "parts": ["subject", "action", "where", "comma", "connector", "subject", "action"], "hint": "Add a where expander to the first clause."},
+{"id": "compoundwhen", "level": "advanced", "parts": ["when", "comma", "subject", "action", "comma", "connector", "subject", "action"], "hint": "Start with a when expander; use a comma after it."},
+{"id": "compoundboth", "level": "advanced", "parts": ["describer", "subject", "action", "where", "comma", "connector", "subject", "action", "how"], "hint": "Two complete thoughts, with details in each."},
+{"id": "longseries", "level": "advanced", "parts": ["describer", "subject", "action", "comma", "action", "comma", "connector", "action", "where", "when"], "hint": "Three actions plus where and when."},
+{"id": "longcompound", "level": "advanced", "parts": ["when", "comma", "describer", "subject", "action", "where", "comma", "connector", "subject", "action", "how"], "hint": "A when opener and two detailed independent clauses."},
+{"id": "longcompoundwhy", "level": "advanced", "parts": ["describer", "subject", "action", "how", "where", "comma", "connector", "subject", "action", "why"], "hint": "Two clauses with how, where, and why."},
+{"id": "longsubjectseries", "level": "advanced", "parts": ["describer", "subject", "comma", "subject", "comma", "connector", "subject", "action", "where", "when"], "hint": "List three subjects and give them one action."},
+{"id": "longpredicate", "level": "advanced", "parts": ["when", "comma", "describer", "subject", "action", "comma", "action", "comma", "connector", "action", "where"], "hint": "When opener, three actions, and where."},
+{"id": "longcompound12", "level": "advanced", "parts": ["when", "comma", "describer", "subject", "action", "how", "where", "comma", "connector", "describer", "subject", "action"], "hint": "A twelve-card compound sentence."},
+{"id": "longcompound12b", "level": "advanced", "parts": ["describer", "subject", "action", "where", "when", "comma", "connector", "describer", "subject", "action", "how", "why"], "hint": "A twelve-card compound sentence with expanders."},
+{"id": "wherehow", "level": "developing", "parts": ["subject", "action", "where", "how"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "whenwhere", "level": "developing", "parts": ["when", "comma", "subject", "action", "where"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "whyhow", "level": "developing", "parts": ["subject", "action", "how", "why"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "describerwhen", "level": "developing", "parts": ["describer", "subject", "action", "when"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "describerwhy", "level": "developing", "parts": ["describer", "subject", "action", "why"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "describertwo", "level": "developing", "parts": ["describer", "subject", "action", "where", "how"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "whenhow", "level": "developing", "parts": ["when", "comma", "subject", "action", "how"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "whywhen", "level": "developing", "parts": ["subject", "action", "when", "why"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundpredicatewhere", "level": "developing", "parts": ["subject", "action", "connector", "action", "where"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundpredicatewhen", "level": "developing", "parts": ["subject", "action", "connector", "action", "when"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundsubjectwhere", "level": "developing", "parts": ["subject", "connector", "subject", "action", "where"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundsubjectwhen", "level": "developing", "parts": ["subject", "connector", "subject", "action", "when"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundsubjecthow", "level": "developing", "parts": ["subject", "connector", "subject", "action", "how"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "threeactionswhere", "level": "advanced", "parts": ["subject", "action", "comma", "action", "comma", "connector", "action", "where"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "threeactionswhen", "level": "advanced", "parts": ["when", "comma", "subject", "action", "comma", "action", "comma", "connector", "action"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "threeactionshow", "level": "advanced", "parts": ["describer", "subject", "action", "comma", "action", "comma", "connector", "action", "how"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundhow", "level": "advanced", "parts": ["subject", "action", "how", "comma", "connector", "subject", "action"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundwhy", "level": "advanced", "parts": ["subject", "action", "why", "comma", "connector", "subject", "action"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundwherewhen", "level": "advanced", "parts": ["subject", "action", "where", "when", "comma", "connector", "subject", "action"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundtwowhere", "level": "advanced", "parts": ["subject", "action", "where", "comma", "connector", "subject", "action", "where"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundtwohow", "level": "advanced", "parts": ["subject", "action", "how", "comma", "connector", "subject", "action", "how"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundtwoexpanders", "level": "advanced", "parts": ["describer", "subject", "action", "how", "where", "comma", "connector", "subject", "action", "when"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundopeningwhy", "level": "advanced", "parts": ["when", "comma", "subject", "action", "why", "comma", "connector", "subject", "action", "where"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundseries", "level": "advanced", "parts": ["subject", "action", "comma", "action", "comma", "connector", "action", "comma", "connector", "subject", "action"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundserieslong", "level": "advanced", "parts": ["subject", "action", "comma", "action", "comma", "connector", "action", "comma", "connector", "subject", "action", "where"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."},
+{"id": "compoundrich12", "level": "advanced", "parts": ["when", "comma", "describer", "subject", "action", "how", "where", "comma", "connector", "describer", "subject", "action"], "hint": "Follow the cards in order. Include each expander and use punctuation to separate complete thoughts or lists."}
+];
+const labels={subject:['Subject','blue'],describer:['Subject Describer','blue'],action:['Action Predicate','yellow'],where:['WHERE Expander','yellow'],when:['WHEN Expander','yellow'],how:['HOW Expander','yellow'],why:['WHY Expander','yellow'],connector:['Connector','white'],comma:['Comma','white']};
+function symbol(type){const p={'subject':'<path d="M7 32 H93"/>','describer':'<rect x="14" y="10" width="72" height="32"/>','action':'<path d="M5 38 L18 10 L31 38 L44 10 L57 38 L70 10 L83 38"/>','connector':'<path d="M4 30 C8 3 24 3 24 30 S43 57 43 30 S63 3 63 30 S82 57 82 30"/>','comma':'<path d="M50 18 Q60 33 47 45"/>','where':'<path d="M8 44 L50 5 L92 44 Z"/>','when':'<path d="M8 44 L50 5 L92 44 Z"/>','how':'<path d="M8 44 L50 5 L92 44 Z"/>','why':'<path d="M8 44 L50 5 L92 44 Z"/>'}[type];return `<svg viewBox="0 0 100 52" aria-hidden="true"><g stroke="#111" stroke-width="3" fill="none" stroke-linejoin="round">${p}</g>${['where','when','how','why'].includes(type)?`<text x="50" y="37" font-size="13" font-weight="bold" text-anchor="middle">${type.toUpperCase()}</text>`:''}</svg>`}
+function card(t){return `<div class="piece ${labels[t][1]}">${symbol(t)}<span>${labels[t][0]}</span></div>`}
+let sceneIndex=0,patternIndex=0,lastScene=-1,lastPattern=-1,exampleVisible=false;
+function pick(n,last){if(n<2)return 0;let v;do{v=Math.floor(Math.random()*n)}while(v===last);return v}
+function eligible(){let d=document.getElementById('difficulty').value;return patterns.map((p,i)=>({...p,i})).filter(p=>d==='mixed'||p.level===d)}
+function render(){let s=scenes[sceneIndex],p=patterns[patternIndex],img=document.getElementById('picture');img.style.display='block';document.getElementById('fallback').style.display='none';img.src='https://commons.wikimedia.org/wiki/Special:Redirect/file/'+encodeURIComponent(s.file);img.alt=s.name;document.getElementById('credit').innerHTML=`${s.name} • ${s.credit} • <a target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(s.file)}">Source & license</a>`;document.getElementById('pattern').innerHTML=p.parts.map(card).join('');document.getElementById('count').textContent=`Pattern: ${p.id} | Animation ${sceneIndex+1}/${scenes.length}`;document.getElementById('hint').classList.add('hidden');document.getElementById('solution').classList.add('hidden');document.getElementById('placeholder').classList.remove('hidden');exampleVisible=false;document.getElementById('exampleButton').textContent='▤ Show Example'}
+document.getElementById('picture').onerror=()=>{document.getElementById('picture').style.display='none';document.getElementById('fallback').style.display='block'};
+function model(s,p){
+ const subject=s.subject, verb=s.verb, where=s.where, when=s.when, how=s.how, why=s.why;
+ const shortSubject=subject.replace(/^The /,'the ');
+ const other=s.other.toLowerCase();
+ const second=s.second.replace(/\.$/,'');
+ const alternate='looks around', third='moves again';
+ const opener='During the activity';
+ const descriptor='Curious';
+ const clause2=second.charAt(0).toUpperCase()+second.slice(1);
+ const finish=t=>t.replace(/\s+/g,' ').trim()+'.';
+ switch(p.id){
+ case 'simple':return finish(`${subject} ${verb}`);
+ case 'where':return finish(`${subject} ${verb} ${where}`);
+ case 'when':return finish(`${subject} ${verb} ${when}`);
+ case 'how':return finish(`${subject} ${verb} ${how}`);
+ case 'why':return finish(`${subject} ${verb} ${why}`);
+ case 'describer':return finish(`${subject} ${verb} ${where}`);
+ case 'twoexpanders':return finish(`${subject} ${verb} ${where} ${when}`);
+ case 'compoundsubject':return finish(`${subject} and ${other} ${verb}`);
+ case 'compoundpredicate':return finish(`${subject} ${verb} and ${alternate}`);
+ case 'series':return finish(`${subject} ${verb}, pauses, and ${third}`);
+ case 'compound':return finish(`${subject} ${verb}, and ${second}`);
+ case 'describerhowwhen':return finish(`${subject} ${verb} ${how} ${when}`);
+ case 'threeexpanders':return finish(`${subject} ${verb} ${how} ${where} ${when}`);
+ case 'whywherewhen':return finish(`${subject} ${verb} ${where} ${when} ${why}`);
+ case 'compoundwhere':return finish(`${subject} ${verb} ${where}, and ${second}`);
+ case 'compoundwhen':return finish(`${opener}, ${subject} ${verb}, and ${second}`);
+ case 'compoundboth':return finish(`${subject} ${verb} ${where}, and ${second} nearby`);
+ case 'longseries':return finish(`${subject} ${verb}, pauses, and ${third} ${where} ${when}`);
+ case 'longcompound':return finish(`${opener}, ${subject} ${verb} ${where}, and ${second} quietly`);
+ case 'longcompoundwhy':return finish(`${subject} ${verb} ${how} ${where}, and ${second} because the moment is interesting`);
+ case 'longsubjectseries':return finish(`${subject}, ${other}, and another animal ${verb} ${where} ${when}`);
+ case 'longpredicate':return finish(`${opener}, ${subject} ${verb}, pauses, and ${third} ${where}`);
+ case 'longcompound12':return finish(`${opener}, ${subject} ${verb} ${how} ${where}, and ${second}`);
+ case 'longcompound12b':return finish(`${subject} ${verb} ${where} ${when}, and ${second} ${how} because it is an exciting moment`);
+ default:return modelNew(s,p);
+ }
+}
+
+function modelNew(s,p){
+ const tokens=p.parts, words=[];
+ let subjects=0,actions=0,clause=0,justComma=false,seriesMode=tokens.filter(x=>x==='action').length>=3;
+ const subj=()=>{subjects++;return subjects===1?s.subject:(subjects===2?s.other.toLowerCase():'another animal')};
+ const action=()=>{actions++;if(actions===1)return s.verb;
+   if(seriesMode && (actions===2||actions===3))return actions===2?'pauses':'looks around';
+   return subjects>1?'moves':'looks around';};
+ for(let i=0;i<tokens.length;i++){
+   const x=tokens[i],prev=tokens[i-1],next=tokens[i+1];
+   if(x==='describer')continue; // Describer is included in the scene's subject phrase.
+   if(x==='subject'){words.push(subj());continue;}
+   if(x==='action'){words.push(action());continue;}
+   if(x==='where'){words.push(clause>0?'nearby':s.where);continue;}
+   if(x==='when'){words.push(i===0?'During playtime':s.when);continue;}
+   if(x==='how'){words.push(clause>0?'quietly':s.how);continue;}
+   if(x==='why'){words.push(clause>0?'because it is curious':s.why);continue;}
+   if(x==='comma'){words.push(',');if(next==='connector' && tokens.slice(i+2).includes('subject'))clause++;continue;}
+   if(x==='connector'){words.push('and');continue;}
+ }
+ let sentence=words.join(' ').replace(/\s+,/g,',').replace(/,\s+and\s+([^,]+)$/,', and $1');
+ sentence=sentence.charAt(0).toUpperCase()+sentence.slice(1);
+ return sentence.replace(/\s+/g,' ').trim()+'.';
+}
+
+function showExample(){const s=scenes[sceneIndex],p=patterns[patternIndex],parts=model(s,p);document.getElementById('sentence').textContent=parts;document.getElementById('framed').textContent=parts.replace(/\.$/,'');document.getElementById('examplecards').innerHTML=p.parts.map(card).join('');document.getElementById('solution').classList.remove('hidden');document.getElementById('placeholder').classList.add('hidden');document.getElementById('exampleButton').textContent='▤ Hide Example';exampleVisible=true}
+document.getElementById('newPicture').onclick=()=>{let pool=scenes.map((s,i)=>({...s,i})).filter(s=>document.getElementById('category').value==='all'||s.kind===document.getElementById('category').value);let selected=pool[pick(pool.length,pool.findIndex(s=>s.i===sceneIndex))];sceneIndex=selected.i;render()};document.getElementById('newPattern').onclick=()=>{let pool=eligible(),selected=pool[pick(pool.length,pool.findIndex(p=>p.i===patternIndex))];patternIndex=selected.i;render()};document.getElementById('hintButton').onclick=()=>{document.getElementById('hint').textContent=patterns[patternIndex].hint;document.getElementById('hint').classList.toggle('hidden');};document.getElementById('exampleButton').onclick=()=>{if(exampleVisible){document.getElementById('solution').classList.add('hidden');document.getElementById('exampleButton').textContent='▤ Show Example';exampleVisible=false}else showExample()};document.getElementById('difficulty').onchange=()=>{document.getElementById('newPattern').click()};document.getElementById('category').onchange=()=>document.getElementById('newPicture').click();sceneIndex=pick(scenes.length,-1);patternIndex=pick(patterns.length,-1);render();
+</script></body></html>
